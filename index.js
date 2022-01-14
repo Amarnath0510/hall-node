@@ -2,6 +2,8 @@
 import express, { request, response } from "express";
 import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
+
+import {roomsRouter} from "./routes/rooms.js";
 dotenv.config();
 
 const app=express();
@@ -94,7 +96,7 @@ const MONGO_URL=process.env.MONGO_URL;
     return client;
 
   }
- const client= await createConnection();
+ export const client= await createConnection();
 
 
 
@@ -102,83 +104,55 @@ const MONGO_URL=process.env.MONGO_URL;
   response.send("Hello Amar you came from 🏠 to here🙋‍♂️🙋‍♂️🙋‍♂️ via 🚢🚢🚢buddy 🤩🤩  ");
 });
 
+app.use("/rooms",roomsRouter);
 
 
-
-app.get("/rooms",async(request,response)=>{
-
-  
-  console.log(request.query);
-  const bookedstatus =await getBookedCustomerdata();
-  console.log(bookedstatus);
-  response.send(bookedstatus);
-});
-
-
-app.get("/rooms",async(request,response)=>{
+// app.get("/rooms",async(request,response)=>{
 
   
-  console.log(request.query);
-  const bookedcustomer =await getBookedRoomName();
-
-  console.log(bookedcustomer);
-  response.send(bookedcustomer);
-});
-
+//   console.log(request.query);
+//   const bookedstatus =await getBookedCustomerdata();
+//   console.log(bookedstatus);
+//   response.send(bookedstatus);
+// });
 
 
-app.post("/rooms",async(request,response)=>{
-  const data=request.body;
-  const add=await createRoom(data);
-  response.send(add);
+// app.get("/rooms",async(request,response)=>{
 
-});
-
-
-
-app.get("/rooms/:id",async(request,response)=>{
-    console.log(request.params);
-    const{id}=request.params;
-    const room= await getRoomById(id);
   
-    console.log(room);
+//   console.log(request.query);
+//   const bookedcustomer =await getBookedRoomName();
+
+//   console.log(bookedcustomer);
+//   response.send(bookedcustomer);
+// });
+
+
+
+// app.post("/rooms",async(request,response)=>{
+//   const data=request.body;
+//   const add=await createRoom(data);
+//   response.send(add);
+
+// });
+
+
+
+// app.get("/rooms/:id",async(request,response)=>{
+//     console.log(request.params);
+//     const{id}=request.params;
+//     const room= await getRoomById(id);
   
-    room
-    ?response.send(room)
-    :response.status(404).send({msg:"No matching room found"})
+//     console.log(room);
+  
+//     room
+//     ?response.send(room)
+//     :response.status(404).send({msg:"No matching room found"})
     
-});
+// });
 
 app.listen(PORT,()=>console.log("App is started in",PORT))
 
 
 
-async function getBookedRoomName() {
-  return await client
-    .db("task41")
-    .collection("rooms")
-    .aggregate([{ $match: { bookedstatus: "confirmed" } }, { $group: { _id: "$customername" } }]);
-}
-
-async function createRoom(data) {
-  return await client
-    .db("task41")
-    .collection("rooms")
-    .insertMany(data);
-}
-
-async function getBookedCustomerdata() {
-  return await client
-    .db("task41")
-    .collection("rooms")
-    .aggregate([{ $match: { bookedstatus: "confirmed" } }])
-    .toArray();
-}
-
-async function getRoomById(id) {
-  return await client
-    .db("task41")
-    .collection("rooms")
-    .findOne({ id: id });
-}
 
