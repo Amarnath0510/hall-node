@@ -94,43 +94,11 @@ const MONGO_URL="mongodb://localhost";
 
 
 
-
-// app.get("/rooms",(request,response)=>{
-// console.log(request.query);
-// const {bookedstatus}= request.query;
-// console.log(bookedstatus);
-
-// if(bookedstatus){
-//     const result=rooms.filter((rm)=>rm.bookedstatus===bookedstatus)
-//     response.send(result)
-// }
-// else{
-//     response.send({msg:"No rooms found"})
-// }
-// });
+ app.get("/",(request,response)=>{
+  response.send("Hello Amar you came from 🏠 to here🙋‍♂️🙋‍♂️🙋‍♂️ via 🚢🚢🚢buddy 🤩🤩  ");
+});
 
 
-
-// app.get("/rooms",(request,response)=>{
-
-  
-//   console.log(request.query);
-//   const{ bookedstatus,roomname}=request.query;
-//   console.log(bookedstatus,roomname);
-//     // response.send(rooms);
-   
-//     let filteredrooms=rooms;
-//     if(bookedstatus){
-//       filteredrooms=filteredrooms.filter((rm)=>rm.bookedstatus===bookedstatus);
-//     }
-    
-// if(roomname){
-//   filteredrooms=filteredrooms.filter((rm)=>rm.roomname===roomname);
-// }
-
-
-// response.send(filteredrooms);
-// });
 
 
 app.get("/rooms",async(request,response)=>{
@@ -140,7 +108,6 @@ app.get("/rooms",async(request,response)=>{
   const bookedstatus =await client
   .db("task41")
   .collection("rooms")
-  // .aggregate([{$match:{bookedstatus:"confirmed"}}]);
   .aggregate([{$match:{bookedstatus:"confirmed"}}])
   .toArray();
   console.log(bookedstatus);
@@ -155,42 +122,12 @@ app.get("/rooms",async(request,response)=>{
   const bookedcustomer =await client
   .db("task41")
   .collection("rooms")
-  aggregate([{$match:{bookedstatus:"confirmed"}},{ $group: {_id:"$customername"}}])
-  // .aggregate([{$match:{bookedstatus:"confirmed"}}]);
-  // .aggregate([{$match:{bookedstatus:"confirmed"}}])
+  .aggregate([{$match:{bookedstatus:"confirmed"}},{ $group: {_id:"$customername"}}])
  .toArray();
   console.log(bookedcustomer);
   response.send(bookedcustomer);
 });
 
-
-
-
-
-
-
-
-
-
-
-
-//   console.log(request.query);
-//   const{ bookedstatus,roomname}=request.query;
-//   console.log(bookedstatus,roomname);
-//     // response.send(rooms);
-   
-//     let filteredrooms=rooms;
-//     if(bookedstatus){
-//       filteredrooms=filteredrooms.filter((rm)=>rm.bookedstatus===bookedstatus);
-//     }
-    
-// if(roomname){
-//   filteredrooms=filteredrooms.filter((rm)=>rm.roomname===roomname);
-// }
-
-
-// response.send(filteredrooms);
-// });
 
 
 app.post("/rooms",async(request,response)=>{
@@ -205,13 +142,9 @@ app.post("/rooms",async(request,response)=>{
 
 
 
-
-
-
 app.get("/rooms/:id",async(request,response)=>{
     console.log(request.params);
     const{id}=request.params;
-    // const room=rooms.find((rm)=>rm.id===id);
     const room= await client
     .db("task41")
     .collection("rooms")
@@ -224,13 +157,5 @@ app.get("/rooms/:id",async(request,response)=>{
     :response.status(404).send({msg:"No matching room found"})
     
 });
-
-
-
-app.get("/",(request,response)=>{
-    response.send("Hello Amar you came from 🏠 to here🙋‍♂️🙋‍♂️🙋‍♂️ via 🚢🚢🚢buddy 🤩🤩  ");
-});
-
-
 
 app.listen(PORT,()=>console.log("App is started in",PORT))
