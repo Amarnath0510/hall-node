@@ -7,7 +7,7 @@ import {roomsRouter} from "./routes/rooms.js";
 dotenv.config();
 
 const app=express();
-const PORT=7001;
+const PORT=process.env.PORT;
 app.use(express.json())
 // const rooms=[
 //     {
